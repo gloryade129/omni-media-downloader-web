@@ -16,7 +16,7 @@ export interface ExtractedMedia {
   streams: MediaStream[];
 }
 
-export function detectPlatform(url: str): "youtube" | "tiktok" | "instagram" | "facebook" | "twitter" | "unknown" {
+export function detectPlatform(url: string): "youtube" | "tiktok" | "instagram" | "facebook" | "twitter" | "unknown" {
   const u = url.toLowerCase();
   if (u.includes("youtube.com") || u.includes("youtu.be")) return "youtube";
   if (u.includes("tiktok.com")) return "tiktok";

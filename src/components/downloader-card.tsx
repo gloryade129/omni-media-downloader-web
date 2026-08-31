@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, Clipboard, Sparkles, Download, CheckCircle2, Youtube, Music, Instagram, Facebook, Twitter, Film } from "lucide-react";
+import { Search, Clipboard, Sparkles, Download, Youtube, Music, Instagram, Facebook, Twitter, Film, Server } from "lucide-react";
 import { detectPlatform, ExtractedMedia } from "@/lib/extractor";
 
 export function DownloaderCard() {
@@ -196,9 +196,15 @@ export function DownloaderCard() {
               </div>
             </div>
 
-            {/* Stream Options */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-widest text-[#c5a880]">Available Downloads</h4>
+            {/* Stream Options with Backup Mirror Servers */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold uppercase tracking-widest text-[#c5a880]">Available Download Links</h4>
+                <span className="text-[10px] text-stone-400 flex items-center gap-1">
+                  <Server className="w-3 h-3 text-emerald-400" /> Multiple High-Speed Servers
+                </span>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {result.streams.map((stream) => (
                   <div
@@ -210,18 +216,33 @@ export function DownloaderCard() {
                         {stream.label}
                       </div>
                       <div className="text-xs text-stone-400">
-                        {stream.quality} • {stream.size || "Original Size"}
+                        {stream.quality} • {stream.size || "HD Stream"}
                       </div>
                     </div>
-                    <a
-                      href={`/api/download?url=${encodeURIComponent(stream.downloadUrl)}&format=${stream.format}&title=${encodeURIComponent(result.title)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-4 py-2 rounded-xl bg-[#c5a880]/15 hover:bg-[#c5a880] text-[#c5a880] hover:text-stone-950 text-xs font-bold transition flex items-center gap-1.5"
-                    >
-                      <Download className="w-3.5 h-3.5" /> Download {stream.format.toUpperCase()}
-                    </a>
-
+                    
+                    <div className="flex items-center gap-1.5">
+                      <a
+                        href={`/api/download?url=${encodeURIComponent(stream.downloadUrl)}&format=${stream.format}&title=${encodeURIComponent(result.title)}&mirror=ssyoutube`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-2 rounded-xl bg-[#c5a880]/15 hover:bg-[#c5a880] text-[#c5a880] hover:text-stone-950 text-xs font-bold transition flex items-center gap-1"
+                        title="Download via Primary Server"
+                      >
+                        <Download className="w-3.5 h-3.5" /> Download
+                      </a>
+                      
+                      {result.platform === "youtube" && (
+                        <a
+                          href={`/api/download?url=${encodeURIComponent(stream.downloadUrl)}&format=${stream.format}&title=${encodeURIComponent(result.title)}&mirror=yt1s`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2.5 py-2 rounded-xl bg-white/5 hover:bg-white/15 text-stone-300 text-xs font-semibold transition"
+                          title="Backup Server 2"
+                        >
+                          Server 2
+                        </a>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

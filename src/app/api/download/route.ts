@@ -5,6 +5,7 @@ export async function GET(req: NextRequest) {
   const targetUrl = searchParams.get("url");
   const format = (searchParams.get("format") || "mp4").toLowerCase();
   const rawTitle = searchParams.get("title") || "media_download";
+  const mirror = searchParams.get("mirror") || "ssyoutube";
 
   if (!targetUrl) {
     return NextResponse.json({ error: "Missing URL parameter" }, { status: 400 });
@@ -13,7 +14,7 @@ export async function GET(req: NextRequest) {
   const cleanTitle = rawTitle.replace(/[^a-zA-Z0-9_\- ]/g, "").trim() || "media";
   const filename = `${cleanTitle}.${format}`;
 
-  // If targetUrl is a direct media file URL (ends in .mp4, .mp3, or comes from media CDN)
+  // 1. Direct Media CDN Streams (TikTok, direct MP4/MP3 files)
   if (
     targetUrl.includes(".mp4") ||
     targetUrl.includes(".mp3") ||
@@ -44,13 +45,22 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // If targetUrl is a YouTube URL, redirect to y2mate converter link for instant 1-click video/audio download
+  // 2. YouTube Video Downloads: Redirect to unblocked high-speed converter mirrors (ssyoutube, yt1s, savefrom)
   const ytMatch = targetUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
   if (ytMatch && ytMatch[1]) {
     const videoId = ytMatch[1];
-    return NextResponse.redirect(`https://www.y2mate.com/youtube/${videoId}`);
+    
+    if (mirror === "yt1s") {
+      return NextResponse.redirect(`https://yt1s.com/en/watch?v=${videoId}`);
+    }
+    if (mirror === "savefrom") {
+      return NextResponse.redirect(`https://savefrom.net/#url=https://www.youtube.com/watch?v=${videoId}`);
+    }
+
+    // Default primary mirror: ssyoutube (unblocked worldwide)
+    return NextResponse.redirect(`https://ssyoutube.com/watch?v=${videoId}`);
   }
 
-  // Default HTTP 302 redirect fallback
+  // 3. Fallback for other platforms
   return NextResponse.redirect(targetUrl);
 }

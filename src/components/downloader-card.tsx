@@ -215,11 +215,13 @@ export function DownloaderCard() {
                     </div>
                     <a
                       href={`/api/download?url=${encodeURIComponent(stream.downloadUrl)}&format=${stream.format}&title=${encodeURIComponent(result.title)}`}
-                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="px-4 py-2 rounded-xl bg-[#c5a880]/15 hover:bg-[#c5a880] text-[#c5a880] hover:text-stone-950 text-xs font-bold transition flex items-center gap-1.5"
                     >
-                      <Download className="w-3.5 h-3.5" /> Download
+                      <Download className="w-3.5 h-3.5" /> Download {stream.format.toUpperCase()}
                     </a>
+
                   </div>
                 ))}
               </div>
